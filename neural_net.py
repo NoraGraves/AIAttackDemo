@@ -27,7 +27,7 @@ def load_model_from_file(filepath):
 def predict(image, model):
     probabilities = model.predict(image)
     index = np.argmax(probabilities)
-    print(f"Predicted as {INDEX_2_NAME[index]}")
+    print(f"You look like {INDEX_2_NAME[index]}!")
 
 # Given a preprocessed image and a keras model, prints the probabilities
 # for each celebrity
