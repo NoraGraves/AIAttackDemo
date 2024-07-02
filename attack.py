@@ -3,7 +3,7 @@
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.losses import SparseCategoricalCrossentropy
 # from tensorflow.keras.applications.resnet50 import decode_predictions
-# from tensorflow.keras.applications.resnet50 import preprocess_input
+from tensorflow.keras.applications.resnet50 import preprocess_input
 import tensorflow as tf
 import numpy as np
 # import argparse
@@ -16,12 +16,12 @@ LR = 5e-3
 
 # clip the values of the tensor to a given range and return it
 def clip_eps(tensor, eps):
-	return tf.clip_by_value(tensor, clip_value_min=-eps,
-		clip_value_max=eps)
+    return tf.clip_by_value(tensor, clip_value_min=-eps,
+        clip_value_max=eps)
 
-# Use gradient method and return targetec delta (noise vector)
+# Use gradient method and return targeted delta (noise vector)
 def generate_targeted_adversaries(model, baseImage, delta, classIdx,
-	target, steps, learning_rate):
+    target, steps, learning_rate):
     # initialize optimizer and loss function
     optimizer = Adam(learning_rate=learning_rate)
     sccLoss = SparseCategoricalCrossentropy()
@@ -36,7 +36,7 @@ def generate_targeted_adversaries(model, baseImage, delta, classIdx,
             
             # add our perturbation vector to the base image and
             # preprocess the resulting image
-            adversary = image_processing.preprocess_input(baseImage + delta)
+            adversary = preprocess_input(baseImage + delta)
             
             # run this newly constructed image tensor through our
             # model and calculate the loss with respect to the
@@ -66,10 +66,12 @@ def generate_targeted_adversaries(model, baseImage, delta, classIdx,
     # return the perturbation vector
     return delta
 
-# Runs a targeted attack on the preprocessed image and returns the
+# Runs a targeted attack on the cropped image and returns the
 # adversarial image
 def targeted_attack(model, image, target_name, steps=400, eps=EPS, learning_rate=LR):
     target=neural_net.name2index(target_name)
+    # Turn image into array
+    image = image_processing.preprocess_image(image)
 
     # create a tensor based off the input image and initialize the
     # perturbation vector (we will update this vector via training)
@@ -78,7 +80,7 @@ def targeted_attack(model, image, target_name, steps=400, eps=EPS, learning_rate
 
     print("[INFO] finding original classification...")
     # Find current prediction
-    orig_class = neural_net.predict_index(image)
+    orig_class = neural_net.predict_index(image, model)
 
     print("[INFO] running the attack...")
     # Run the attack
