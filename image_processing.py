@@ -14,7 +14,11 @@ GOAL_HEIGHT = 224
 GOAL_LEFT_EYE = (0.27, 0.27)
 GOAL_RIGHT_EYE = (1-GOAL_LEFT_EYE[0], GOAL_LEFT_EYE[1])
 
-# Given a cv2 image, displays it (designed to work in Google Colab)
+# Given a filepath, returns an image object
+def read_image_from_file(filepath):
+    return cv2.imread(filepath)
+
+# Given an image, displays it (designed to work in Google Colab)
 def show_image(img):
     cv2_imshow(img)
 
@@ -23,7 +27,7 @@ def show_image_from_file(filepath):
     img = cv2.imread(filepath)
     cv2_imshow(img)
 
-# Given a cv2 image, returns it as a keras input
+# Given an image, returns it as a keras input
 def preprocess_image(image):
 	# swap color channels, resize the input image, and add a batch
 	# dimension
