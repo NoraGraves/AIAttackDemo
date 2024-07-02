@@ -8,8 +8,8 @@ import tensorflow as tf
 import numpy as np
 # import argparse
 import cv2
-import AIAttackDemo.image_processing
-import AIAttackDemo.neural_net
+import AIAttackDemo.image_processing as image_processing
+import AIAttackDemo.neural_net as neural_net
 
 EPS = 2 / 255.0
 LR = 5e-3
