@@ -11,12 +11,12 @@ INDEX_2_NAME = ['Alica Schmidt', 'Angela Merkel', 'Barack Obama',
                  'Sandra Oh', 'Serena Williams', 'Simu Lui', 'Zendaya']
 NAME_2_INDEX = {'Alica Schmidt':0, 'Angela Merkel' :1, 'Barack Obama':2,
                  'Bruno Mars':3, 'Dwayne Johnson':4, 'Ed Sheeran':5,
-                 'Emma Stone':6, 'Greta Thunberg':7, 'Jackie Chan':7,
-                 'Malala':8, 'Manuel Neuer':9, 'Mark Forster':10,
-                 'Michael Jordan':11, 'Namika':12, 'Olaf Schulz':13,
-                 'Olivia Rodrigo':14, 'Rihanna':15, 'Ryan Gosling':16,
-                 'Sandra Oh':17, 'Serena Williams':18, 'Simu Lui':19,
-                 'Zendaya':20}
+                 'Emma Stone':6, 'Greta Thunberg':7, 'Jackie Chan':8,
+                 'Malala':9, 'Manuel Neuer':10, 'Mark Forster':11,
+                 'Michael Jordan':12, 'Namika':13, 'Olaf Schulz':14,
+                 'Olivia Rodrigo':15, 'Rihanna':16, 'Ryan Gosling':17,
+                 'Sandra Oh':18, 'Serena Williams':19, 'Simu Lui':20,
+                 'Zendaya':21}
 
 # Given a .keras filepath, returns a keras object with those weights
 def load_model_from_file(filepath):
