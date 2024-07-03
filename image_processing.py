@@ -6,7 +6,6 @@
 import cv2
 import dlib
 import numpy as np
-from google.colab.patches import cv2_imshow
 
 # The intended photo format
 GOAL_WIDTH = 224
@@ -17,15 +16,6 @@ GOAL_RIGHT_EYE = (1-GOAL_LEFT_EYE[0], GOAL_LEFT_EYE[1])
 # Given a filepath, returns an image object
 def read_image_from_file(filepath):
     return cv2.imread(filepath)
-
-# Given an image, displays it (designed to work in Google Colab)
-def show_image(img):
-    cv2_imshow(img)
-
-# Given an image filepath, displays it (designed to work in Google Colab)
-def show_image_from_file(filepath):
-    img = cv2.imread(filepath)
-    cv2_imshow(img)
 
 # Given an image, returns it as a keras input
 def preprocess_image(image):
@@ -40,7 +30,7 @@ def preprocess_image(image):
 # Given the filepath of any image (.jpg, .jpeg, or .png), locates and 
 # centers the face, then crops the image to the desired shape
 # Returns a cv2 image object
-def crop_image(filepath, goal_width=GOAL_WIDTH, goal_height=GOAL_HEIGHT,
+def crop_image_from_file(filepath, goal_width=GOAL_WIDTH, goal_height=GOAL_HEIGHT,
                goal_left_eye=GOAL_LEFT_EYE, goal_right_eye=GOAL_RIGHT_EYE):
     img = cv2.imread(filepath)
     # convert to grayscale
