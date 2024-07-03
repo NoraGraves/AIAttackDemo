@@ -36,20 +36,21 @@ def generate_targeted_adversaries(model, baseImage, delta, classIdx,
             # preprocess the resulting image
             adversary = preprocess_input(baseImage + delta)
             
-            # find current prediction and change classIdx if necessary
-            # or end early if goal has been reached
-            if checkin & (step % 100==0):
-                classIdx = neural_net.predict_index(adversary, model)
-                print(f'[CHECK-IN] Current prediction is {neural_net.index2name(classIdx)}')
-                if classIdx == target:
-                    print('Goal reached. Ending early.')
-                    return delta
-
             # run this newly constructed image tensor through our
             # model and calculate the loss with respect to the
             # both the *original* class label and the *target*
             # class label
             predictions = model(adversary, training=False)
+            
+            # find current prediction and change classIdx if necessary
+            # or end early if goal has been reached
+            if checkin & (step % 100==0):
+                classIdx = int(np.argmax(predictions))
+                print(f'[CHECK-IN] Current prediction is {neural_net.index2name(classIdx)}')
+                if curr_classIdx == target:
+                    print('Goal reached. Ending early.')
+                    return delta
+
             originalLoss = -sccLoss(tf.convert_to_tensor([classIdx]),
                 predictions)
             targetLoss = sccLoss(tf.convert_to_tensor([target]),
