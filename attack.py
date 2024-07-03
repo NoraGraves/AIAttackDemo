@@ -44,9 +44,10 @@ def generate_targeted_adversaries(model, baseImage, delta, classIdx,
             
             # find current prediction and change classIdx if necessary
             # or end early if goal has been reached
-            if checkin & (step % 100==0):
+            if checkin:
                 classIdx = int(np.argmax(predictions))
-                print(f'[CHECK-IN] Current prediction is {neural_net.index2name(classIdx)}')
+                if (steps % 50 == 0):
+                    print(f'[CHECK-IN] Current prediction is {neural_net.index2name(classIdx)}')
                 if classIdx == target:
                     print('Goal reached. Ending early.')
                     return delta
