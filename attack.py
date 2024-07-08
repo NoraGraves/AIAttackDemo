@@ -51,7 +51,7 @@ def generate_targeted_adversaries(model, baseImage, delta, classIdx,
                 curr_classIdx = int(np.argmax(predictions))
                 if (step % 50) == 0:
                     print(f'[CHECK-IN] Current prediction is {neural_net.index2name(curr_classIdx)}')
-                    if checkin & !untargeted:
+                    if checkin & not untargeted:
                         classIdx = curr_classIdx
                         
                 if untargeted:
