@@ -57,9 +57,11 @@ def generate_targeted_adversaries(model, baseImage, delta, classIdx,
                         
                 if untargeted:
                     if curr_classIdx != classIdx:
+                        print(f'[CHECK-IN] Current prediction is {neural_net.index2name(curr_classIdx)}')
                         print('Goal reached. Ending early.')
                         return delta
                 elif curr_classIdx == target:
+                    print(f'[CHECK-IN] Current prediction is {neural_net.index2name(curr_classIdx)}')
                     print('Goal reached. Ending early.')
                     return delta
                     
