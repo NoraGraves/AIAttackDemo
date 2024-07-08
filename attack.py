@@ -26,6 +26,8 @@ def generate_targeted_adversaries(model, baseImage, delta, classIdx,
     
     if target == None: untargeted=True
     else: untargeted = False
+    
+    done_counter = 10
 
     # iterate over the number of steps
     with progressbar.ProgressBar(max_value=steps) as bar:
@@ -47,20 +49,21 @@ def generate_targeted_adversaries(model, baseImage, delta, classIdx,
                 predictions = model(adversary, training=False)
                 
                 # find current prediction and change classIdx if necessary
-                # or end early if goal has been reached
                 curr_classIdx = int(np.argmax(predictions.numpy()))
                 if (step % 50) == 0:
                     print(f'[CHECK-IN] Current prediction is {neural_net.index2name(curr_classIdx)}')
                     if checkin and (not untargeted):
                         classIdx = curr_classIdx
-                        
+                
+                # update done_counter if current prediction is successful
                 if untargeted:
                     if curr_classIdx != classIdx:
-                        print(f'[CHECK-IN] Current prediction is {neural_net.index2name(curr_classIdx)}')
-                        print('Goal reached. Ending early.')
-                        return delta
+                        done_counter = done_counter - 1
                 elif curr_classIdx == target:
-                    print(f'[CHECK-IN] Current prediction is {neural_net.index2name(curr_classIdx)}')
+                        done_counter = done_counter - 1
+                        
+                # end early if current prediction has been successful ten times
+                if done_counter <= 0:
                     print('Goal reached. Ending early.')
                     return delta
                     
