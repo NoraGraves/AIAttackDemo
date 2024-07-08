@@ -26,6 +26,7 @@ def generate_targeted_adversaries(model, baseImage, delta, classIdx,
     sccLoss = SparseCategoricalCrossentropy()
     
     if target == None: untargeted=True
+    else: untargeted = False
 
     # iterate over the number of steps
     with progressbar.ProgressBar(max_value=steps) as bar:
@@ -51,7 +52,7 @@ def generate_targeted_adversaries(model, baseImage, delta, classIdx,
                 curr_classIdx = int(np.argmax(predictions))
                 if (step % 50) == 0:
                     print(f'[CHECK-IN] Current prediction is {neural_net.index2name(curr_classIdx)}')
-                    if checkin & not untargeted:
+                    if checkin and (not untargeted):
                         classIdx = curr_classIdx
                         
                 if untargeted:
