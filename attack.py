@@ -2,7 +2,6 @@
 
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.losses import SparseCategoricalCrossentropy
-from tensorflow.keras.applications.resnet50 import preprocess_input
 import tensorflow as tf
 import numpy as np
 import cv2
@@ -40,7 +39,6 @@ def generate_targeted_adversaries(model, baseImage, delta, classIdx,
                 # add our perturbation vector to the base image and
                 # preprocess the resulting image
                 adversary = tf.clip_by_value((baseImage + delta), clip_value_min=0, clip_value_max=255)
-                #adversary = preprocess_input(adversary)
                 
                 # run this newly constructed image tensor through our
                 # model and calculate the loss with respect to the
