@@ -23,11 +23,12 @@ def load_model_from_file(filepath):
     return keras.models.load_model(filepath)
 
 # Given a preprocessed image and a keras model, prints the name the
-# model predicts for the given input
+# model predicts for the given input, returns the index
 def predict(image, model):
     probabilities = model.predict(image)
     index = np.argmax(probabilities)
-    print(f"You look like {INDEX_2_NAME[index]}!")
+    print(f'You look like {INDEX_2_NAME[index]}!')
+    return int(index)
 
 # Given a preprocessed image and a keras model, prints the probabilities
 # for each celebrity
@@ -46,13 +47,22 @@ def predict_index(image, model):
 # returns the index of a name
 def name2index(name):
     if name in NAME_2_INDEX:
-        return NAME_2_INDEX[name]
+        return int(NAME_2_INDEX[name])
     else:
         print(f'{name} is not in the dataset. Check the spelling and formatting, or try a different name.')
 
 # returns the name of an index
 def index2name(index):
     if index >= 0 & index <= 20:
-        return INDEX_2_NAME[index]
+        return str(INDEX_2_NAME[index])
     else:
         print(f'{index} is not a valid index.')
+        return ''
+
+# returns the filepath for a celeb image based on index
+# designed for the specific Colab Notebook for this project!
+def index2filepath(index):
+    index_str = f'{index:02d}'
+    folder_name = index_str + ''.join(index2name(index).split())
+    filepath = f'/content/AIAttackDemo/sample_images/{folder_name}/{index_str}.jpeg'
+    return filepath
