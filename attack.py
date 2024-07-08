@@ -25,7 +25,7 @@ def generate_targeted_adversaries(model, baseImage, delta, classIdx,
     optimizer = Adam(learning_rate=learning_rate)
     sccLoss = SparseCategoricalCrossentropy()
     
-    if target = None: untargeted=True
+    if target == None: untargeted=True
 
     # iterate over the number of steps
     with progressbar.ProgressBar(max_value=steps) as bar:
