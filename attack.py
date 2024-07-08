@@ -40,7 +40,7 @@ def generate_targeted_adversaries(model, baseImage, delta, classIdx,
                 # add our perturbation vector to the base image and
                 # preprocess the resulting image
                 adversary = tf.clip_by_value((baseImage + delta), clip_value_min=0, clip_value_max=255)
-                adversary = preprocess_input(adversary)
+                #adversary = preprocess_input(adversary)
                 
                 # run this newly constructed image tensor through our
                 # model and calculate the loss with respect to the
@@ -50,7 +50,7 @@ def generate_targeted_adversaries(model, baseImage, delta, classIdx,
                 
                 # find current prediction and change classIdx if necessary
                 # or end early if goal has been reached
-                curr_classIdx = int(np.argmax(predictions))
+                curr_classIdx = int(np.argmax(predictions.numpy()))
                 if (step % 50) == 0:
                     print(f'[CHECK-IN] Current prediction is {neural_net.index2name(curr_classIdx)}')
                     if checkin and (not untargeted):
