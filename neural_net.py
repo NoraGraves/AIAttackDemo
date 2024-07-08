@@ -21,12 +21,17 @@ NAME_2_INDEX = {'Alica Schmidt':0, 'Angela Merkel' :1, 'Barack Obama':2,
 # Given a .keras filepath, returns a keras object with those weights
 def load_model_from_file(filepath):
     return keras.models.load_model(filepath)
+    
+# Given a preprocessed image and a keras model, returns the index the
+# model predicts
+def predict_index(image, model):
+    probabilities = model.predict(image)
+    return int(np.argmax(probabilities))
 
 # Given a preprocessed image and a keras model, prints the name the
 # model predicts for the given input, returns the index
 def predict(image, model):
-    probabilities = model.predict(image)
-    index = np.argmax(probabilities)
+    index = predict_index(image, model)
     print(f'You look like {INDEX_2_NAME[index]}!')
     return int(index)
 
@@ -36,13 +41,6 @@ def print_all_probs(image, model):
     probabilities = model.predict(image)
     for i, prob in enumerate(probabilities[0]):
         print(f'{INDEX_2_NAME[i] : <16} {(prob*100):.3f}%')
-
-
-# Given a preprocessed image and a keras model, returns the index the
-# model predicts
-def predict_index(image, model):
-    probabilities = model.predict(image)
-    return int(np.argmax(probabilities))
 
 # returns the index of a name
 def name2index(name):
