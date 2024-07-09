@@ -19,7 +19,7 @@ def clip_eps(tensor, eps):
 
 # Use gradient method and return targeted delta (noise vector)
 def generate_targeted_adversaries(model, baseImage, delta, classIdx,
-    target, steps, learning_rate, checkin=False, signs_only=False):
+    target, steps, learning_rate, checkin=False):
     # initialize optimizer and loss function
     optimizer = Adam(learning_rate=learning_rate)
     sccLoss = SparseCategoricalCrossentropy()
