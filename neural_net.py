@@ -24,7 +24,7 @@ def load_model_from_file(filepath):
     
 # Given a preprocessed image and a keras model, returns the index the
 # model predicts
-def predict_index(image, model, verbose=None):
+def predict_index(image, model, verbose=0):
     probabilities = model.predict(image)
     return int(np.argmax(probabilities))
 
@@ -38,7 +38,7 @@ def predict(image, model):
 # Given a preprocessed image and a keras model, prints the probabilities
 # for each celebrity
 def print_all_probs(image, model):
-    probabilities = model.predict(image, verbose=None)
+    probabilities = model.predict(image, verbose=0)
     indices = np.argsort(probabilities)
     indices = np.flip(indices[0])
     for i in indices:
