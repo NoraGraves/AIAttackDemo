@@ -19,7 +19,7 @@ def clip_eps(tensor, eps):
 
 # Use gradient method and return targeted delta (noise vector)
 def generate_targeted_adversaries(model, baseImage, delta, classIdx,
-    target, steps, learning_rate, checkin=False):
+    target, steps, learning_rate, checkin=False, signs_only=False):
     # initialize optimizer and loss function
     optimizer = Adam(learning_rate=learning_rate)
     sccLoss = SparseCategoricalCrossentropy()
@@ -81,9 +81,13 @@ def generate_targeted_adversaries(model, baseImage, delta, classIdx,
             # perturbation vector
             gradients = tape.gradient(totalLoss, delta)
             
-            # update the weights, clip the perturbation vector, and
-            # update its value
+            # update the weights
             optimizer.apply_gradients([(gradients, delta)])
+            
+            # use signs only (optional)
+            # if signs_only: delta = tf.signs(delta)
+            
+            # clip perturbation vector and update its value
             delta.assign_add(clip_eps(delta, eps=EPS))
             bar.update(step)
 
@@ -93,7 +97,7 @@ def generate_targeted_adversaries(model, baseImage, delta, classIdx,
 
 # Runs a targeted attack on the cropped image and returns the
 # adversarial image
-def targeted_attack(model, image, target_name, steps=400, eps=EPS, learning_rate=LR):
+def targeted_attack(model, image, target_name, steps=400, eps=EPS, learning_rate=LR, check_in=False):
     target=neural_net.name2index(target_name)
     # Turn image into array
     image = image_processing.preprocess_image(image)
@@ -110,36 +114,7 @@ def targeted_attack(model, image, target_name, steps=400, eps=EPS, learning_rate
     print("[INFO] running the attack...")
     # Run the attack
     deltaUpdated = generate_targeted_adversaries(model=model, baseImage=baseImage, delta=delta,
-    classIdx=orig_class, target=target, steps=steps, learning_rate=learning_rate)
-
-    # create the adversarial example, swap color channels, and save the
-    # output image to disk
-    print("[INFO] creating targeted adversarial example...")
-    adverImage = (baseImage + deltaUpdated).numpy().squeeze()
-    adverImage = np.clip(adverImage, 0, 255).astype("uint8")
-    adverImage = cv2.cvtColor(adverImage, cv2.COLOR_RGB2BGR)
-    return adverImage
-
-# Runs a targeted attack on the cropped image and returns the
-# adversarial image
-def targeted_attack_checkin(model, image, target_name, steps=400, eps=EPS, learning_rate=LR):
-    target=neural_net.name2index(target_name)
-    # Turn image into array
-    image = image_processing.preprocess_image(image)
-
-    # create a tensor based off the input image and initialize the
-    # perturbation vector (we will update this vector via training)
-    baseImage = tf.constant(image, dtype=tf.float32)
-    delta = tf.Variable(tf.zeros_like(baseImage), trainable=True)
-
-    print("[INFO] finding original classification...")
-    # Find current prediction
-    orig_class = neural_net.predict_index(image, model)
-
-    print("[INFO] running the attack...")
-    # Run the attack
-    deltaUpdated = generate_targeted_adversaries(model=model, baseImage=baseImage, delta=delta,
-    classIdx=orig_class, target=target, steps=steps, learning_rate=learning_rate, checkin=True)
+        classIdx=orig_class, target=target, steps=steps, learning_rate=learning_rate, checkin=check_in)
 
     # create the adversarial example, swap color channels, and save the
     # output image to disk
