@@ -41,7 +41,7 @@ def print_all_probs(image, model):
     probabilities = model.predict(image, verbose=None)
     indices = np.argsort(probabilities)
     for i in indices:
-        prob = probabilities[i]
+        prob = probabilities[0][i]
         name = index2name(i)
         print(f'{name : <16} {(prob*100):.3f}%')
 
