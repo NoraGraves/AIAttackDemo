@@ -83,10 +83,7 @@ def generate_targeted_adversaries(model, baseImage, delta, classIdx,
             
             # update the weights
             optimizer.apply_gradients([(gradients, delta)])
-            
-            # use signs only (optional)
-            # if signs_only: delta = tf.signs(delta)
-            
+                        
             # clip perturbation vector and update its value
             delta.assign_add(clip_eps(delta, eps=EPS))
             bar.update(step)
