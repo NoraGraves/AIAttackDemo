@@ -54,7 +54,7 @@ def name2index(name):
 
 # returns the name of an index
 def index2name(index):
-    if index >= 0 & index <= 20:
+    if (index >= 0) and (index <= 21):
         return str(INDEX_2_NAME[index])
     else:
         print(f'{index} is not a valid index.')
