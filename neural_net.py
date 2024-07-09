@@ -40,6 +40,7 @@ def predict(image, model):
 def print_all_probs(image, model):
     probabilities = model.predict(image, verbose=None)
     indices = np.argsort(probabilities)
+    indices = np.flip(indices[0])
     for i in indices:
         prob = probabilities[0][i]
         name = index2name(i)
