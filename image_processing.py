@@ -8,10 +8,37 @@ import dlib
 import numpy as np
 
 # The intended photo format
-GOAL_WIDTH = 224
-GOAL_HEIGHT = 224
-GOAL_LEFT_EYE = (0.27, 0.27)
-GOAL_RIGHT_EYE = (1-GOAL_LEFT_EYE[0], GOAL_LEFT_EYE[1])
+__GOAL_WIDTH = 224
+__GOAL_HEIGHT = 224
+__GOAL_LEFT_EYE = (0.27, 0.27)
+__GOAL_RIGHT_EYE = (1-__GOAL_LEFT_EYE[0], __GOAL_LEFT_EYE[1])
+
+# The first index of right and left eyes
+# (see dlib 68 facial landmarks diagram)
+__RIGHT_EYE_START = 36
+__LEFT_EYE_START = 42
+
+# Given the lowest index of the eye, calculate the center of the pupil
+# Returns a tuple with (x, y) coordinates
+def __eye_pupil_center(landmarks, first_index):
+    # keep track of x and y coord sums
+    x_sum, y_sum = 0, 0
+    
+    # loop through all eye indices
+    for i in range(6):
+        # skip the landmarks for the corners of the eyes
+        # (see dlib 68 facial landmarks diagram)
+        if (i % 3 == 0): continue
+        
+        # add coordinates to sum
+        curr_index = first_index + i
+        x_sum += landmarks.part(curr_index).x
+        y_sum += landmarks.part(curr_index).y
+    
+    # find average values and return
+    return (int(x_sum / 4), int(y_sum / 4))
+        
+        
 
 # Given a filepath, returns an image object
 def read_image_from_file(filepath):
@@ -30,8 +57,8 @@ def preprocess_image(image):
 # Given the filepath of any image (.jpg, .jpeg, or .png), locates and 
 # centers the face, then crops the image to the desired shape
 # Returns a cv2 image object
-def crop_image_from_file(filepath, goal_width=GOAL_WIDTH, goal_height=GOAL_HEIGHT,
-               goal_left_eye=GOAL_LEFT_EYE, goal_right_eye=GOAL_RIGHT_EYE):
+def crop_image_from_file(filepath, goal_width=__GOAL_WIDTH, goal_height=__GOAL_HEIGHT,
+               goal_left_eye=__GOAL_LEFT_EYE, goal_right_eye=__GOAL_RIGHT_EYE):
     img = cv2.imread(filepath)
     # convert to grayscale
     gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -42,12 +69,6 @@ def crop_image_from_file(filepath, goal_width=GOAL_WIDTH, goal_height=GOAL_HEIGH
     faces = detector(gray)
     face = faces[0]
 
-    # Extract specific coordinates of the main face (x1,x2,y1,y2)
-    x1=face.left()
-    y1=face.top()
-    x2=face.right()
-    y2=face.bottom()
-
     # Initialize dlib's shape predictor
     p = "shape_predictor_68_face_landmarks.dat"
     predictor = dlib.shape_predictor(p)
@@ -56,14 +77,8 @@ def crop_image_from_file(filepath, goal_width=GOAL_WIDTH, goal_height=GOAL_HEIGH
     landmarks=predictor(gray, face)
 
     # find center of both eyes
-    left_eye_x = int((landmarks.part(37).x + landmarks.part(38).x +
-                landmarks.part(40).x + landmarks.part(41).x) / 4)
-    left_eye_y = int((landmarks.part(37).y + landmarks.part(38).y +
-                landmarks.part(40).y + landmarks.part(41).y) / 4)
-    right_eye_x = int((landmarks.part(43).x + landmarks.part(44).x +
-                landmarks.part(46).x + landmarks.part(47).x) / 4)
-    right_eye_y = int((landmarks.part(43).y + landmarks.part(44).y +
-                landmarks.part(46).y + landmarks.part(47).y) / 4)
+    left_eye_x, left_eye_y = __eye_pupil_center(landmarks, __LEFT_EYE_START)
+    right_eye_x, right_eye_y = __eye_pupil_center(landmarks, __RIGHT_EYE_START)
 
     # Calculate the angle of the eyes (tanx = dY/dX) ((0,0) is at top left)
     dY = -(right_eye_y - left_eye_y)

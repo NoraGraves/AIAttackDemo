@@ -13,12 +13,12 @@ EPS = 2 / 255.0
 LR = 5e-3
 
 # clip the values of the tensor to a given range and return it
-def clip_eps(tensor, eps):
+def __clip_eps(tensor, eps):
     return tf.clip_by_value(tensor, clip_value_min=-eps,
         clip_value_max=eps)
 
 # Use gradient method and return targeted delta (noise vector)
-def generate_targeted_adversaries(model, baseImage, delta, classIdx,
+def __generate_targeted_adversaries(model, baseImage, delta, classIdx,
     target, steps, learning_rate, checkin=False):
     # initialize optimizer and loss function
     optimizer = Adam(learning_rate=learning_rate)
@@ -85,7 +85,7 @@ def generate_targeted_adversaries(model, baseImage, delta, classIdx,
             optimizer.apply_gradients([(gradients, delta)])
                         
             # clip perturbation vector and update its value
-            delta.assign_add(clip_eps(delta, eps=EPS))
+            delta.assign_add(__clip_eps(delta, eps=EPS))
             bar.update(step)
 
     # return the perturbation vector
@@ -110,7 +110,7 @@ def targeted_attack(model, image, target_name, steps=400, eps=EPS, learning_rate
 
     print("[INFO] running the attack...")
     # Run the attack
-    deltaUpdated = generate_targeted_adversaries(model=model, baseImage=baseImage, delta=delta,
+    deltaUpdated = __generate_targeted_adversaries(model=model, baseImage=baseImage, delta=delta,
         classIdx=orig_class, target=target, steps=steps, learning_rate=learning_rate, checkin=check_in)
 
     # create the adversarial example, swap color channels, and save the
@@ -136,7 +136,7 @@ def untargeted_attack(model, image, steps=400, eps=EPS, learning_rate=LR):
 
     print("[INFO] running the attack...")
     # Run the attack
-    deltaUpdated = generate_targeted_adversaries(model=model, baseImage=baseImage, delta=delta,
+    deltaUpdated = __generate_targeted_adversaries(model=model, baseImage=baseImage, delta=delta,
     classIdx=orig_class, target=None, steps=steps, learning_rate=learning_rate)
 
     # create the adversarial example, swap color channels, and save the
