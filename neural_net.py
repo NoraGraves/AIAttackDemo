@@ -24,7 +24,8 @@ def predict_index(image, model, verbose=0):
 # model predicts for the given input, returns the index
 def predict(image, model):
     index = predict_index(image, model)
-    print(f'You look like {__INDEX_TO_NAME[index]}!')
+    name = index2name(index)
+    print(f'You look like {name}!')
     return int(index)
 
 # Given a preprocessed image and a keras model, prints the probabilities

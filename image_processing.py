@@ -37,8 +37,6 @@ def __eye_pupil_center(landmarks, first_index):
     
     # find average values and return
     return (int(x_sum / 4), int(y_sum / 4))
-        
-        
 
 # Given a filepath, returns an image object
 def read_image_from_file(filepath):
